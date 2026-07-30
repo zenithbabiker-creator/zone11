@@ -10,7 +10,6 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
         maven { url = uri("https://developer.huawei.com/repo/") }
-
     }
 }
 
@@ -20,7 +19,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven(url = "https://developer.huawei.com/repo/")
-        maven(url = "https://developer.agconnect.com/repo/") // أضف هذا المستودع الجديد الخاص بـ AGC
+        maven(url = "https://developer.agconnect.com/repo/")
     }
 }
 
