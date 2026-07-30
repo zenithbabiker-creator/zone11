@@ -63,6 +63,7 @@ dependencies {
     implementation("com.google.ar:core:1.45.0")
     implementation("com.huawei.hms:arenginesdk:4.0.0.5")
     implementation("com.huawei.hms:base:6.13.0.300")
+    implementation("com.huawei.hms:hatool:6.13.0.300")
     implementation("androidx.camera:camera-camera2:1.4.0")
     implementation("androidx.camera:camera-lifecycle:1.4.0")
     implementation("androidx.camera:camera-view:1.4.0")
