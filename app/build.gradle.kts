@@ -61,9 +61,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
 
     implementation("com.google.ar:core:1.45.0")
-    implementation("com.huawei.hms:arenginesdk:3.13.0.3")  
-    implementation("com.huawei.hms:base:6.13.0.400")
-
+    implementation("com.huawei.hms:arenginesdk:4.0.0.5")
+    implementation("com.huawei.hms:base:6.13.0.300")
     implementation("androidx.camera:camera-camera2:1.4.0")
     implementation("androidx.camera:camera-lifecycle:1.4.0")
     implementation("androidx.camera:camera-view:1.4.0")
