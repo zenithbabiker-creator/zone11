@@ -19,7 +19,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url = uri("https://developer.huawei.com/repo/") }
+        maven(url = "https://developer.huawei.com/repo/")
+        maven(url = "https://developer.agconnect.com/repo/") // أضف هذا المستودع الجديد الخاص بـ AGC
     }
 }
 
