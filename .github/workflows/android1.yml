@@ -36,7 +36,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: home-landscaping-apks
-          path: |
-            app/build/outputs/apk/debug/
-            app/build/outputs/apk/release/
+          path: app/build/outputs/apk/
           if-no-files-found: error
