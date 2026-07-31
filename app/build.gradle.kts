@@ -62,7 +62,7 @@ dependencies {
 
     implementation("com.google.ar:core:1.45.0")
     
-    # استخدام الإصدار الذهبي الذي تم التحقق منه ونجح تحميله بنجاح تام
+    // استخدام الإصدار الذهبي الذي تم التحقق منه ونجح تحميله بنجاح تام
     implementation("com.huawei.hmf:tasks:6.11.0.300")
     implementation("com.huawei.android.hms:security-encrypt:6.11.0.300")
     implementation("com.huawei.android.hms:security-ssl:6.11.0.300")
