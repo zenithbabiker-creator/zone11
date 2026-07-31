@@ -62,9 +62,11 @@ dependencies {
 
     implementation("com.google.ar:core:1.45.0")
 
+    // حزم خدمات هواوي المتوافقة والمحدثة للإصدارات الحديثة
     implementation("com.huawei.hmf:tasks:1.5.2.206")
     implementation("com.huawei.hms:base:6.11.0.300")
-    implementation("com.huawei.hms:arenginesdk:4.0.0.5")
+    // تم تحديث إصدار الـ arenginesdk ليتوافق مع بورا 70 وبقية حزم الـ 6.x
+    implementation("com.huawei.hms:arenginesdk:6.11.0.300")
     implementation("com.huawei.hms:hatool:6.11.0.300")
     implementation("com.huawei.agconnect:agconnect-core:1.9.0.300")
 
