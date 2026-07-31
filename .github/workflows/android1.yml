@@ -1,4 +1,4 @@
-name: 🚀 Huawei 10-Way Matrix Build Test
+name: 🤖 Android CI - Huawei Stable Build
 
 on:
   push:
@@ -7,71 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  huawei-matrix-build:
+  build:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          # 1. مستودع هواوي الرسمي + إصدار HMS 6.11.0.300 (الأحدث استقراراً)
-          - repo_url: "https://developer.huawei.com/repo/"
-            hms_version: "6.11.0.300"
-            ar_version: "4.0.0.5"
-            tag: "Official-HMS611"
-
-          # 2. مرآة هواوي كلاود + إصدار HMS 6.11.0.300
-          - repo_url: "https://repo.huaweicloud.com/repository/maven/"
-            hms_version: "6.11.0.300"
-            ar_version: "4.0.0.5"
-            tag: "Cloud-HMS611"
-
-          # 3. مستودع AGConnect + إصدار HMS 6.11.0.300
-          - repo_url: "https://developer.agconnect.com/repo/"
-            hms_version: "6.11.0.300"
-            ar_version: "4.0.0.5"
-            tag: "AGConnect-HMS611"
-
-          # 4. مستودع هواوي الرسمي + إصدار HMS 6.10.0.300
-          - repo_url: "https://developer.huawei.com/repo/"
-            hms_version: "6.10.0.300"
-            ar_version: "4.0.0.5"
-            tag: "Official-HMS610"
-
-          # 5. مرآة هواوي كلاود + إصدار HMS 6.10.0.300
-          - repo_url: "https://repo.huaweicloud.com/repository/maven/"
-            hms_version: "6.10.0.300"
-            ar_version: "4.0.0.5"
-            tag: "Cloud-HMS610"
-
-          # 6. مستودع هواوي الرسمي + إصدار HMS 6.9.0.300 (الإصدار السابق)
-          - repo_url: "https://developer.huawei.com/repo/"
-            hms_version: "6.9.0.300"
-            ar_version: "4.0.0.5"
-            tag: "Official-HMS69"
-
-          # 7. مرآة هواوي كلاود + إصدار HMS 6.9.0.300
-          - repo_url: "https://repo.huaweicloud.com/repository/maven/"
-            hms_version: "6.9.0.300"
-            ar_version: "4.0.0.5"
-            tag: "Cloud-HMS69"
-
-          # 8. مستودع هواوي الرسمي + حزمة AR Engine مستقلة 4.0.0.5
-          - repo_url: "https://developer.huawei.com/repo/"
-            hms_version: "6.11.0.300"
-            ar_version: "4.0.0.5"
-            tag: "Official-AREngine"
-
-          # 9. مرآة هواوي كلاود + حزمة AR Engine مستقلة 4.0.0.5
-          - repo_url: "https://repo.huaweicloud.com/repository/maven/"
-            hms_version: "6.11.0.300"
-            ar_version: "4.0.0.5"
-            tag: "Cloud-AREngine"
-
-          # 10. مستودع بديل (Tencent/Huawei Mirror) + الإصدار القياسي
-          - repo_url: "https://mirrors.cloud.tencent.com/nexus/content/groups/public/"
-            hms_version: "6.11.0.300"
-            ar_version: "4.0.0.5"
-            tag: "Tencent-Mirror"
 
     steps:
       - name: 📥 Checkout repository
@@ -87,54 +24,19 @@ jobs:
       - name: 🔑 Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: ⚙️ Run Build Strategy ${{ matrix.tag }}
+      - name: 🛠️ Build Debug & Release APKs (with retries)
         run: |
-          echo "Testing Strategy: ${{ matrix.tag }}"
-          echo "Repository: ${{ matrix.repo_url }}"
-          echo "HMS Version: ${{ matrix.hms_version }}"
-          echo "AR Engine Version: ${{ matrix.ar_version }}"
+          for i in 1 2 3; do
+            ./gradlew assembleDebug assembleRelease --stacktrace --no-daemon && break
+            echo "Build failed (attempt $i). Retrying in 10s..."
+            sleep 10
+          done
 
-          # كتابة إعدادات المستودع ديناميكياً
-          cat << 'EOF' > settings.gradle
-          pluginManagement {
-              repositories {
-                  google {
-                      content {
-                          includeGroupByRegex("com\\.android.*")
-                          includeGroupByRegex("com\\.google.*")
-                          includeGroupByRegex("androidx.*")
-                      }
-                  }
-                  mavenCentral()
-                  gradlePluginPortal()
-                  maven { url = uri("${{ matrix.repo_url }}") }
-              }
-          }
-
-          dependencyResolutionManagement {
-              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-              repositories {
-                  google()
-                  mavenCentral()
-                  maven(url = "${{ matrix.repo_url }}")
-              }
-          }
-
-          rootProject.name = "zone11"
-          include(":app")
-          EOF
-
-          # حقن الإصدارات الصحيحة داخل ملف app/build.gradle
-          sed -i 's/6.13.0.300/${{ matrix.hms_version }}/g' app/build.gradle
-          sed -i 's/1.9.0.300/${{ matrix.hms_version }}/g' app/build.gradle
-          sed -i 's/4.0.0.5/${{ matrix.ar_version }}/g' app/build.gradle
-
-      - name: 🛠️ Build APK
-        run: ./gradlew assembleDebug --stacktrace --no-daemon
-
-      - name: 📦 Upload Successful APK
+      - name: 📦 Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: huawei-apk-${{ matrix.tag }}
-          path: app/build/outputs/apk/debug/
-          if-no-files-found: ignore
+          name: home-landscaping-apks
+          path: |
+            app/build/outputs/apk/debug/
+            app/build/outputs/apk/release/
+          if-no-files-found: error
