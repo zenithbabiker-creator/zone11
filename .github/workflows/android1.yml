@@ -1,4 +1,4 @@
-name: Android CI
+name: 🤖 Android CI
 
 on:
   push:
@@ -11,40 +11,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: ☕ Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
           cache: gradle
 
-      - name: Grant execute permission for gradlew
+      - name: 🔑 Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build Debug APK
-        run: |
-          for i in 1 2 3; do
-            ./gradlew assembleDebug --stacktrace --no-daemon && break
-            echo "Gradle failed (attempt $i). Retrying..."
-            sleep $((i * 10))
-          done
+      - name: 🛠️ Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace --no-daemon
 
-      - name: Build Release APK
-        run: |
-          for i in 1 2 3; do
-            ./gradlew assembleRelease --stacktrace --no-daemon && break
-            echo "Gradle failed (attempt $i). Retrying..."
-            sleep $((i * 10))
-          done
+      - name: 🚀 Build Release APK
+        run: ./gradlew assembleRelease --stacktrace --no-daemon
 
-      - name: Upload APK artifacts
+      - name: 📦 Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
           name: home-landscaping-apks
           path: |
-            app/build/outputs/apk/debug/*.apk
-            app/build/outputs/apk/release/*.apk
+            app/build/outputs/apk/debug/
+            app/build/outputs/apk/release/
           if-no-files-found: error
