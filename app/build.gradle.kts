@@ -1,56 +1,3 @@
-plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("kotlin-parcelize")
-}
-
-android {
-    namespace = "com.example.homelandscape"
-    compileSdk = 35
-
-    defaultConfig {
-        applicationId = "com.example.homelandscape"
-        minSdk = 24
-        targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-            )
-            signingConfig = signingConfigs.getByName("debug")
-        }
-        debug {
-            isDebuggable = true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
-    buildFeatures {
-        viewBinding = true
-    }
-
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-}
-
 dependencies {
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.appcompat:appcompat:1.7.0")
@@ -62,8 +9,8 @@ dependencies {
 
     implementation("com.google.ar:core:1.45.0")
     
-    // استخدام الإصدار الذهبي الذي تم التحقق منه ونجح تحميله بنجاح تام
-    implementation("com.huawei.hmf:tasks:6.11.0.300")
+    // الإصدارات المطابقة رسمياً من ملفات الـ POM
+    implementation("com.huawei.hmf:tasks:1.5.2.206")
     implementation("com.huawei.android.hms:security-encrypt:6.11.0.300")
     implementation("com.huawei.android.hms:security-ssl:6.11.0.300")
     implementation("com.huawei.hms:network-grs:6.11.0.300")
