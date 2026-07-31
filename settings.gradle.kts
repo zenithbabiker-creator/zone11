@@ -19,7 +19,6 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven(url = "https://developer.huawei.com/repo/")
-        maven(url = "https://developer.agconnect.com/repo/")
     }
 }
 
