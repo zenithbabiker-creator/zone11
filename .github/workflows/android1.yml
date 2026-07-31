@@ -24,11 +24,21 @@ jobs:
       - name: 🔑 Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: 🛠️ Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace --no-daemon
+      - name: 🛠️ Build Debug APK (with retries)
+        run: |
+          for i in 1 2 3; do
+            ./gradlew assembleDebug --stacktrace --no-daemon && break
+            echo "Gradle build failed (attempt $i). Retrying in 10s..."
+            sleep 10
+          done
 
-      - name: 🚀 Build Release APK
-        run: ./gradlew assembleRelease --stacktrace --no-daemon
+      - name: 🚀 Build Release APK (with retries)
+        run: |
+          for i in 1 2 3; do
+            ./gradlew assembleRelease --stacktrace --no-daemon && break
+            echo "Gradle build failed (attempt $i). Retrying in 10s..."
+            sleep 10
+          done
 
       - name: 📦 Upload APK artifacts
         uses: actions/upload-artifact@v4
