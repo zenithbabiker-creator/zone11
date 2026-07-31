@@ -1,4 +1,4 @@
-name: 🤖 Huawei Dependency Matrix Test
+name: 🚀 Huawei 10-Way Matrix Build Test
 
 on:
   push:
@@ -7,36 +7,71 @@ on:
     branches: [main]
 
 jobs:
-  test-build:
+  huawei-matrix-build:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         include:
-          # التجربة الأولى: المستودع الرسمي لهواوي + الإصدار الأحدث 6.13.0.300
+          # 1. مستودع هواوي الرسمي + إصدار HMS 6.11.0.300 (الأحدث استقراراً)
           - repo_url: "https://developer.huawei.com/repo/"
-            hms_version: "6.13.0.300"
-            strategy_name: "Official-Repo-Latest"
+            hms_version: "6.11.0.300"
+            ar_version: "4.0.0.5"
+            tag: "Official-HMS611"
 
-          # التجربة الثانية: مرآة HuaweiCloud السريعة + الإصدار الأحدث 6.13.0.300
+          # 2. مرآة هواوي كلاود + إصدار HMS 6.11.0.300
           - repo_url: "https://repo.huaweicloud.com/repository/maven/"
-            hms_version: "6.13.0.300"
-            strategy_name: "HuaweiCloud-Repo-Latest"
+            hms_version: "6.11.0.300"
+            ar_version: "4.0.0.5"
+            tag: "Cloud-HMS611"
 
-          # التجربة الثالثة: مستودع AGConnect الأصلي + الإصدار الأحدث 6.13.0.300
+          # 3. مستودع AGConnect + إصدار HMS 6.11.0.300
           - repo_url: "https://developer.agconnect.com/repo/"
-            hms_version: "6.13.0.300"
-            strategy_name: "AGConnect-Repo-Latest"
-
-          # التجربة الرابعة: المرآة السريعة + الإصدار السابق (Stable) 6.11.0.300
-          - repo_url: "https://repo.huaweicloud.com/repository/maven/"
             hms_version: "6.11.0.300"
-            strategy_name: "HuaweiCloud-Repo-Stable"
+            ar_version: "4.0.0.5"
+            tag: "AGConnect-HMS611"
 
-          # التجربة الخامسة: المستودع الرسمي + الإصدار السابق 6.11.0.300
+          # 4. مستودع هواوي الرسمي + إصدار HMS 6.10.0.300
+          - repo_url: "https://developer.huawei.com/repo/"
+            hms_version: "6.10.0.300"
+            ar_version: "4.0.0.5"
+            tag: "Official-HMS610"
+
+          # 5. مرآة هواوي كلاود + إصدار HMS 6.10.0.300
+          - repo_url: "https://repo.huaweicloud.com/repository/maven/"
+            hms_version: "6.10.0.300"
+            ar_version: "4.0.0.5"
+            tag: "Cloud-HMS610"
+
+          # 6. مستودع هواوي الرسمي + إصدار HMS 6.9.0.300 (الإصدار السابق)
+          - repo_url: "https://developer.huawei.com/repo/"
+            hms_version: "6.9.0.300"
+            ar_version: "4.0.0.5"
+            tag: "Official-HMS69"
+
+          # 7. مرآة هواوي كلاود + إصدار HMS 6.9.0.300
+          - repo_url: "https://repo.huaweicloud.com/repository/maven/"
+            hms_version: "6.9.0.300"
+            ar_version: "4.0.0.5"
+            tag: "Cloud-HMS69"
+
+          # 8. مستودع هواوي الرسمي + حزمة AR Engine مستقلة 4.0.0.5
           - repo_url: "https://developer.huawei.com/repo/"
             hms_version: "6.11.0.300"
-            strategy_name: "Official-Repo-Stable"
+            ar_version: "4.0.0.5"
+            tag: "Official-AREngine"
+
+          # 9. مرآة هواوي كلاود + حزمة AR Engine مستقلة 4.0.0.5
+          - repo_url: "https://repo.huaweicloud.com/repository/maven/"
+            hms_version: "6.11.0.300"
+            ar_version: "4.0.0.5"
+            tag: "Cloud-AREngine"
+
+          # 10. مستودع بديل (Tencent/Huawei Mirror) + الإصدار القياسي
+          - repo_url: "https://mirrors.cloud.tencent.com/nexus/content/groups/public/"
+            hms_version: "6.11.0.300"
+            ar_version: "4.0.0.5"
+            tag: "Tencent-Mirror"
 
     steps:
       - name: 📥 Checkout repository
@@ -52,13 +87,14 @@ jobs:
       - name: 🔑 Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: ⚙️ Inject repository and version dynamically for ${{ matrix.strategy_name }}
+      - name: ⚙️ Run Build Strategy ${{ matrix.tag }}
         run: |
-          echo "Testing Strategy: ${{ matrix.strategy_name }}"
-          echo "Using Repo: ${{ matrix.repo_url }}"
-          echo "Using HMS Version: ${{ matrix.hms_version }}"
+          echo "Testing Strategy: ${{ matrix.tag }}"
+          echo "Repository: ${{ matrix.repo_url }}"
+          echo "HMS Version: ${{ matrix.hms_version }}"
+          echo "AR Engine Version: ${{ matrix.ar_version }}"
 
-          # تعديل ملف settings.gradle ليتوافق مع المستودع المختبر ديناميكياً
+          # كتابة إعدادات المستودع ديناميكياً
           cat << 'EOF' > settings.gradle
           pluginManagement {
               repositories {
@@ -88,21 +124,17 @@ jobs:
           include(":app")
           EOF
 
-          # تحديث إصدارات هواوي في ملف الـ app/build.gradle ديناميكياً بناءً على الماتريكس
-          sed -i 's/:6.13.0.300/:${{ matrix.hms_version }}/g' app/build.gradle
-          sed -i 's/:1.9.0.300/:${{ matrix.hms_version }}/g' app/build.gradle
+          # حقن الإصدارات الصحيحة داخل ملف app/build.gradle
+          sed -i 's/6.13.0.300/${{ matrix.hms_version }}/g' app/build.gradle
+          sed -i 's/1.9.0.300/${{ matrix.hms_version }}/g' app/build.gradle
+          sed -i 's/4.0.0.5/${{ matrix.ar_version }}/g' app/build.gradle
 
-      - name: 🛠️ Build Debug APK with retries
-        run: |
-          for i in 1 2 3; do
-            ./gradlew assembleDebug --stacktrace --no-daemon && break
-            echo "Build failed on attempt $i. Retrying..."
-            sleep 5
-          done
+      - name: 🛠️ Build APK
+        run: ./gradlew assembleDebug --stacktrace --no-daemon
 
-      - name: 📦 Upload APK artifacts if successful
+      - name: 📦 Upload Successful APK
         uses: actions/upload-artifact@v4
         with:
-          name: apks-${{ matrix.strategy_name }}
+          name: huawei-apk-${{ matrix.tag }}
           path: app/build/outputs/apk/debug/
           if-no-files-found: ignore
