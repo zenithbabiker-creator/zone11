@@ -22,5 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "HomeLandscapingMeasure"
+rootProject.name = "zone11"
 include(":app")
