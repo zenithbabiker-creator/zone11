@@ -1,5 +1,6 @@
 package com.example.homelandscape.ui
 
+import com.example.homelandscape.R
 import android.Manifest
 import android.content.ContentValues
 import android.content.pm.PackageManager
