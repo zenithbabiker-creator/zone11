@@ -9,7 +9,6 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
-        maven { url = uri("https://repo.huaweicloud.com/repository/maven/") }
         maven { url = uri("https://developer.huawei.com/repo/") }
     }
 }
@@ -19,8 +18,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven(url = "https://repo.huaweicloud.com/repository/maven/")
-        maven(url = "https://developer.huawei.com/repo/")
+        // أضف هذا السطر ليتيح لـ Gradle الوصول لسيرفرات هواوي التي اختبرتها للتو:
+        maven { url = java.net.URI("https://developer.huawei.com/repo/") }
     }
 }
 
