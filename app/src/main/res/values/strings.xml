@@ -26,3 +26,4 @@
     <string name="snapshot_saved">Saved: %1$s</string>
     <string name="result_area">Surface area: %1$s</string>
     <string name="result_volume">Fill volume: %1$s</string>
+</resources>
