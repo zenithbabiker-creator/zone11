@@ -14,6 +14,11 @@ jobs:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
+      - name: 🟢 Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
       - name: ☕ Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -36,7 +41,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: home-landscaping-apks
-          path: |
-            app/build/outputs/apk/debug/
-            app/build/outputs/apk/release/
-          if-no-files-found: error
+          path: app/build/outputs/apk/
+          if-no-files-found: ignore
